@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   useUpdateTimePeriodsMutation,
   useUpdateCommonParamsMutation,
-  useConvertCartToOrderMutation,
   useConvertCartToOrderQuery,
+  usePayOrderMutation,
+  useMakeOrderMutation,
 } from "../model/orderApi";
-import { setFieldsToUpdateOrder, setOrderDatePeriod, setMinDateForOrder } from "../model/orderSlice";
+import { setFieldsToUpdateOrder } from "../model/orderSlice";
 import {
   Box,
-  CircularProgress,
   MenuItem,
   Select,
   FormControl,
   InputLabel,
-  TextField,
   RadioGroup,
   FormControlLabel,
   Radio,
   SelectChangeEvent,
   Typography,
+  Button,
 } from "@mui/material";
 import { RootState } from "@app/store";
 import { useGetAddressesQuery } from "@entities/address";
@@ -29,6 +29,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 import { LoadingIndicator } from "@shared/ui/loadingIndicator";
+import { PaymentMethodNames } from "../model/types";
+import WebApp from "@twa-dev/sdk";
 
 export const Checkout: React.FC = () => {
   useConvertCartToOrderQuery();
@@ -40,6 +42,32 @@ export const Checkout: React.FC = () => {
   const { data: addresses, isLoading: isLoadingAddresses } = useGetAddressesQuery();
   const [updateTimePeriods, { isLoading: isUpdatingTimePeriods }] = useUpdateTimePeriodsMutation();
   const [updateCommonParams, { isLoading: isCommonParamsUpdating }] = useUpdateCommonParamsMutation();
+  const [payOrder, { data }] = usePayOrderMutation();
+  const [makeOrder, { data: makeOrderData }] = useMakeOrderMutation();
+
+  const handleOrderCompletion = () => {
+    WebApp.showPopup({
+      title: "Заказ завершен",
+      message: "Спасибо за ваш заказ!",
+      buttons: [{ id: "ok", type: "default", text: "OK" }],
+    });
+
+    setTimeout(() => {
+      WebApp.close();
+    }, 2000);
+  };
+
+  useEffect(() => {
+    if (makeOrderData?.message) {
+      handleOrderCompletion();
+    }
+  }, [makeOrderData]);
+
+  useEffect(() => {
+    if (data?.redirect) {
+      WebApp.openLink(data.redirect);
+    }
+  }, [data?.redirect]);
 
   useEffect(() => {
     if (order?.district_id) {
@@ -101,7 +129,7 @@ export const Checkout: React.FC = () => {
         })
       );
     }
-  }, [orderDatePeriod]);
+  }, [dispatch, orderDatePeriod]);
 
   const handlePayTypeChange = (e: SelectChangeEvent<string>) => {
     dispatch(
@@ -114,6 +142,12 @@ export const Checkout: React.FC = () => {
       pay_type_id: e.target.value,
     });
   };
+
+  const isOnlinePayment = useMemo(() => {
+    const payType = order?.pay_types_rich?.find(pt => pt.id === order.pay_type_id);
+
+    return payType?.system_name === PaymentMethodNames.CARD || payType?.system_name === PaymentMethodNames.SBP;
+  }, [order]);
 
   return (
     <Box sx={{ p: 2 }}>
@@ -169,6 +203,25 @@ export const Checkout: React.FC = () => {
                 ))}
               </Select>
             </FormControl>
+          </Box>
+        )}
+        {!!fieldsToUpdateOrder.address_id && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+            {isOnlinePayment ? (
+              <Button
+                onClick={() => {
+                  payOrder();
+                }}>
+                Оплатить
+              </Button>
+            ) : (
+              <Button
+                onClick={() => {
+                  makeOrder();
+                }}>
+                Оформить заказ
+              </Button>
+            )}
           </Box>
         )}
       </Box>

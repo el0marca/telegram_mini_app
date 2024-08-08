@@ -85,9 +85,8 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.order = payload.order;
       })
-      .addMatcher(orderAPI.endpoints.convertCartToOrder.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.convertCartToOrder.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.updateTimePeriods.matchPending, state => {
         state.status = "loading";
@@ -98,9 +97,8 @@ const orderSlice = createSlice({
         state.minDateForOrder = payload.date;
         state.fieldsToUpdateOrder.date = payload.date;
       })
-      .addMatcher(orderAPI.endpoints.updateTimePeriods.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.updateTimePeriods.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.updateCommonParams.matchPending, state => {
         state.status = "loading";
@@ -109,9 +107,8 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.order = payload.order;
       })
-      .addMatcher(orderAPI.endpoints.updateCommonParams.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.updateCommonParams.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.applyPromoCode.matchPending, state => {
         state.status = "loading";
@@ -120,20 +117,18 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.order = payload.order;
       })
-      .addMatcher(orderAPI.endpoints.applyPromoCode.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.applyPromoCode.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.makeOrder.matchPending, state => {
         state.status = "loading";
       })
-      .addMatcher(orderAPI.endpoints.makeOrder.matchFulfilled, (state, { payload }) => {
+      .addMatcher(orderAPI.endpoints.makeOrder.matchFulfilled, (state) => {
         state.status = "succeeded";
-        state.order = null; // assuming order is reset after making an order
+        state.order = null;
       })
-      .addMatcher(orderAPI.endpoints.makeOrder.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.makeOrder.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.payOrder.matchPending, state => {
         state.status = "loading";
@@ -142,9 +137,8 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.linkForPay = payload.redirect;
       })
-      .addMatcher(orderAPI.endpoints.payOrder.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.payOrder.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.getOrders.matchPending, state => {
         state.status = "loading";
@@ -153,9 +147,8 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.orders = payload.orders;
       })
-      .addMatcher(orderAPI.endpoints.getOrders.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.getOrders.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.submitReview.matchPending, state => {
         state.status = "loading";
@@ -163,9 +156,8 @@ const orderSlice = createSlice({
       .addMatcher(orderAPI.endpoints.submitReview.matchFulfilled, state => {
         state.status = "succeeded";
       })
-      .addMatcher(orderAPI.endpoints.submitReview.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.submitReview.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       })
       .addMatcher(orderAPI.endpoints.cancelOrder.matchPending, state => {
         state.status = "loading";
@@ -174,9 +166,8 @@ const orderSlice = createSlice({
         state.status = "succeeded";
         state.order = payload.order;
       })
-      .addMatcher(orderAPI.endpoints.cancelOrder.matchRejected, (state, { error }) => {
+      .addMatcher(orderAPI.endpoints.cancelOrder.matchRejected, (state) => {
         state.status = "failed";
-        // state.error = error.message;
       });
   },
 });

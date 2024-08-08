@@ -1,6 +1,5 @@
 import React from "react";
-import { getCompanyInfo, useGetOrUpdateTokenQuery } from "@entities/login";
-import { skipToken } from "@reduxjs/toolkit/query";
+import { getCompanyInfo } from "@entities/login";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IMAGES } from "@shared/assets/images";
 import { AppBar, Box, IconButton, Typography, styled } from "@mui/material";

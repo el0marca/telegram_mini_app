@@ -6,7 +6,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: headers => {
+    prepareHeaders: (headers) => {
       const token = localStorage.getItem("token");
       if (token) {
         headers.set("mobile-token", token);
@@ -15,7 +15,7 @@ export const authApi = createApi({
     },
   }),
   tagTypes: ["Token"],
-  endpoints: builder => ({
+  endpoints: (builder) => ({
     getOrUpdateToken: builder.query<MobileTokenServerResponse, void>({
       query: () => ({
         url: "tokens",
@@ -52,14 +52,18 @@ export const authApi = createApi({
         body: { code },
       }),
     }),
-    loginByPhoneCall: builder.mutation<{ phone: string; }, { phone: string }>({
-      query: ({  phone }) => ({
+    loginByPhoneCall: builder.mutation<{ phone: string }, { phone: string }>({
+      query: ({ phone }) => ({
         url: `/tokens/submit_phone`,
         method: "POST",
         body: { phone },
       }),
+      invalidatesTags: ["Token"],
     }),
-    setCity: builder.mutation<MobileTokenServerResponse, { city_brach_id: string }>({
+    setCity: builder.mutation<
+      MobileTokenServerResponse,
+      { city_brach_id: string }
+    >({
       query: ({ city_brach_id }) => ({
         url: `tokens/city`,
         method: "POST",

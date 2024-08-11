@@ -21,7 +21,7 @@ export const addressAPI = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: headers => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("mobileToken");
       if (token) {
         headers.set("mobile-token", token);
       }

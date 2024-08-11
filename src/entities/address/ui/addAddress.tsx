@@ -84,9 +84,9 @@ export const AddAddress: React.FC = () => {
       const isKeyboardVisible = viewportHeight < window.innerHeight;
 
       if (isKeyboardVisible) {
-        document.querySelector("body")!.style.transform = `translateY(-${
-          window.innerHeight - viewportHeight
-        }px)`;
+        document.querySelector(
+          "body"
+        )!.style.transform = `translateY(-${200}px)`;
       } else {
         document.querySelector("body")!.style.transform = "translateY(0)";
       }
@@ -334,27 +334,28 @@ export const AddAddress: React.FC = () => {
               />
               <TextField
                 margin="dense"
+                sx={{ mr: 1 }}
                 label="Этаж"
                 fullWidth
                 onChange={(e) => {
                   dispatch(setInputAddress({ floor: e.target.value }));
                 }}
               />
+              <TextField
+                margin="dense"
+                label="Корпус"
+                fullWidth
+                onChange={(e) => {
+                  dispatch(setInputAddress({ korp: e.target.value }));
+                }}
+              />
             </Box>
-            <TextField
-              margin="dense"
-              label="Корпус"
-              fullWidth
-              onChange={(e) => {
-                dispatch(setInputAddress({ korp: e.target.value }));
-              }}
-            />
             <TextField
               margin="dense"
               label="Комментарий"
               fullWidth
               multiline
-              rows={4}
+              rows={2}
               onChange={(e) => {
                 dispatch(setInputAddress({ client_comment: e.target.value }));
               }}

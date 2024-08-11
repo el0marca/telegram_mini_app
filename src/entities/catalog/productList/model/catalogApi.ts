@@ -5,6 +5,7 @@ import {
   //   APIResponse,
 } from "./types";
 import { Catalog, CategoryItem } from "@shared/types";
+
 const companyId = localStorage.getItem("companyId");
 
 export const BASE_URL = `https://waterapp.ru/api/${companyId}/v3`;

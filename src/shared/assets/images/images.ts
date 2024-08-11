@@ -5,4 +5,7 @@ export const IMAGES = {
   attention: new URL("./attention.png", import.meta.url).href,
   logOut: new URL("./logOut.png", import.meta.url).href,
   check: new URL("./check.png", import.meta.url).href,
+  navigation: new URL("./navigation.png", import.meta.url).href,
+  marker: new URL("./marker.png", import.meta.url).href,
+
 };

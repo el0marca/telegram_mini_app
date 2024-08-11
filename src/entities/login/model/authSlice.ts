@@ -29,6 +29,25 @@ export const getCompanyInfo = (state: { auth: AuthState }) => state.auth.mobile_
 
 export const getMobileToken = (state: { auth: AuthState }) => state.auth.mobile_token;
 
+export const getDeliveryZones = (state: { auth: AuthState }) => {
+  const deliveryZones = state.auth.mobile_token?.districts.map(d => d.zones);
+  const polygons = [];
+  if (deliveryZones) {
+    for (const zones of deliveryZones) {
+      for (const zone of zones) {
+        const polygon = [];
+        for (const coords of zone.coords) {
+          if (coords[0] && coords[1]) polygon.push({ latitude: coords[0], longitude: coords[1] });
+        }
+        if (polygon.length) {
+          polygons.push(polygon);
+        }
+      }
+    }
+  }
+  return polygons;
+};
+
 export const getCompanyCurrencySymbol = (state: { auth: AuthState }) =>
   state.auth.mobile_token?.company_info.currency_hash.symbol_html;
 

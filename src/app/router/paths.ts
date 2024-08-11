@@ -7,6 +7,7 @@ export const PATHS = {
     INDEX: "cart",
     ORDER_FORM: "order-form",
   },
+  ADD_ADDRESS: "add-address",
 } as const;
 
 const ABSOLUTE_SYMBOL = "/";
@@ -15,12 +16,10 @@ export const absolutePath = (path: string): string => `/${path}`;
 
 export const nestedRoute = (...routes: string[]): string => routes.join("/");
 
-export const pathWithParams = (
-  ...params: Array<string | number | null | undefined>
-) =>
+export const pathWithParams = (...params: Array<string | number | null | undefined>) =>
   ABSOLUTE_SYMBOL +
   params
-    .filter((p) => {
+    .filter(p => {
       if (!p) {
         console.warn(`param is ${p}`);
         return false;

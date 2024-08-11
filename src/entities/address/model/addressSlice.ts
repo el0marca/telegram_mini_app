@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ProcessedAddress, InputAddress, Location } from "./types";
+import { RootState } from "@app/store";
 
 interface AddressState {
   addresses: ProcessedAddress[];
@@ -55,6 +56,9 @@ const addressSlice = createSlice({
     },
   },
 });
+
+export const getInputAddress = (state: RootState) => state.address.inputAddress;
+export const getAddressCoordinates = (state: RootState) => state.address.addressCoordinates;
 
 export const {
   setAddresses,

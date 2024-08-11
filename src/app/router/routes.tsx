@@ -4,6 +4,7 @@ import PrivateLayout from "./privateLayout";
 import { Catalog } from "@pages/catalog";
 import { Cart } from "@pages/cart";
 import { Checkout } from "@entities/cart/checkout/ui/checkout";
+import { AddAddress } from "@entities/address";
 
 interface PrivateRoute {
   private?: boolean;
@@ -25,6 +26,10 @@ const routesConfig: Route[] = [
   {
     path: PATHS.LOGIN,
     // element: <Login />,
+  },
+  {
+    path: PATHS.ADD_ADDRESS,
+    element: <AddAddress />,
   },
   {
     path: PATHS.CART.INDEX,

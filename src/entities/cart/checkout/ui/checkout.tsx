@@ -20,6 +20,7 @@ import {
   SelectChangeEvent,
   Typography,
   Button,
+  styled,
 } from "@mui/material";
 import { RootState } from "@app/store";
 import { useGetAddressesQuery } from "@entities/address";
@@ -31,10 +32,12 @@ import dayjs from "dayjs";
 import { LoadingIndicator } from "@shared/ui/loadingIndicator";
 import { PaymentMethodNames } from "../model/types";
 import WebApp from "@twa-dev/sdk";
+import { useNavigate } from "react-router-dom";
 
 export const Checkout: React.FC = () => {
   useConvertCartToOrderQuery();
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { fieldsToUpdateOrder, orderDatePeriod, minDateForOrder, order } = useSelector(
     (state: RootState) => state.order
@@ -153,7 +156,7 @@ export const Checkout: React.FC = () => {
     <Box sx={{ p: 2 }}>
       {(isCommonParamsUpdating || isUpdatingTimePeriods || isLoadingAddresses) && <LoadingIndicator />}
       <Box>
-        <FormControl component="fieldset" fullWidth margin="normal">
+        <FormControl component="fieldset" fullWidth>
           <Typography>Выберите адрес</Typography>
           <RadioGroup value={fieldsToUpdateOrder.address_id} onChange={handleAddressChange}>
             {addresses?.map(address => (
@@ -161,6 +164,9 @@ export const Checkout: React.FC = () => {
             ))}
           </RadioGroup>
         </FormControl>
+        <Box sx={{ display: "flex", justifyContent: "center", mb: 1 }}>
+          <Button onClick={() => navigate("/add-address")}>Добавить адрес</Button>
+        </Box>
         {fieldsToUpdateOrder.address_id && (
           <Box>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -206,25 +212,32 @@ export const Checkout: React.FC = () => {
           </Box>
         )}
         {!!fieldsToUpdateOrder.address_id && (
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
-            {isOnlinePayment ? (
-              <Button
-                onClick={() => {
-                  payOrder();
-                }}>
-                Оплатить
-              </Button>
-            ) : (
-              <Button
-                onClick={() => {
-                  makeOrder();
-                }}>
-                Оформить заказ
-              </Button>
-            )}
-          </Box>
+          <OrderButton
+            onClick={() => {
+              isOnlinePayment ? payOrder() : makeOrder();
+            }}>
+            {isOnlinePayment ? "Оплатить" : "Оформить заказ"}
+          </OrderButton>
         )}
       </Box>
     </Box>
   );
 };
+
+const OrderButton = styled(Button)({
+  backgroundColor: "#13bbff",
+  color: "#fff",
+  border: "none",
+  padding: "10px",
+  fontSize: "16px",
+  borderRadius: "30px",
+  width: "100%",
+  cursor: "pointer",
+  "&:hover": {
+    backgroundColor: "#13bbff",
+  },
+  "&.disabled": {
+    backgroundColor: "#c5c5c5",
+    cursor: "not-allowed",
+  },
+});

@@ -27,7 +27,7 @@ export const ProductListItem: React.FC<Props> = ({ product }) => {
     <StyledCard>
       <BonusInfo item={product} />
       <StyledCardMedia image={product.icon_url ?? IMAGES.noImage} />
-      <CardContent>
+      <CardContent sx={{ width: "100%" }}>
         <Typography variant="h6">{product.title}</Typography>
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={2}>
           <Typography variant="body1" fontWeight="bold">

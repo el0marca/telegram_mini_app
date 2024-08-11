@@ -123,7 +123,7 @@ export const OrderSummary: React.FC<OrderSummaryProps> = ({
               </Typography>
               <Box sx={{ display: "flex" }}>
                 <Typography sx={{ fontWeight: 900 }}>{formattedOrderSum}</Typography>
-                {bonus_earn_sum && (
+                {!!bonus_earn_sum && (
                   <Typography sx={{ fontWeight: 700, color: "#13bbff", ml: 1 }}>{` ${formattedBonusSum}`}</Typography>
                 )}
               </Box>

@@ -11,6 +11,7 @@ interface BonusInfoProps {
 const BonusInfo: React.FC<BonusInfoProps> = ({ item }) => {
   const { data } = useGetOrUpdateTokenQuery(undefined, { skip: true });
   const bonuses = useFormatBonus({ bonuses: item.bonus_sum });
+
   if (!data?.mobile_token.company_info.is_bonus_avaliable) {
     return null;
   }

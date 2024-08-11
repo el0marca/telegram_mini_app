@@ -12,15 +12,8 @@ import { IMAGES } from "@shared/assets/images";
 import { Alert, Box, Snackbar } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { getDeliveryZones } from "@entities/login";
-import {
-  useCreateAddressMutation,
-  useReverseGeocodeMutation,
-} from "../model/addressApi";
-import {
-  getAddressCoordinates,
-  getInputAddress,
-  setInputAddress,
-} from "../model/addressSlice";
+import { useCreateAddressMutation, useReverseGeocodeMutation } from "../model/addressApi";
+import { getAddressCoordinates, getInputAddress, setInputAddress } from "../model/addressSlice";
 import { useNavigate } from "react-router-dom";
 import { YandexAutocomplete } from "./yandexAutoComplete";
 
@@ -71,39 +64,15 @@ export const AddAddress: React.FC = () => {
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
   const deliveryZones = useSelector(getDeliveryZones);
   const [reverseGeocode, { data }] = useReverseGeocodeMutation();
-  const [createAddress, { data: createAddressData }] =
-    useCreateAddressMutation();
+  const [createAddress, { data: createAddressData }] = useCreateAddressMutation();
   const [processed, setProcessed] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
   const inputAddress = useSelector(getInputAddress);
   const addressCoordinates = useSelector(getAddressCoordinates);
 
   useEffect(() => {
-    const handleResize = () => {
-      const viewportHeight = window!.visualViewport!.height;
-      const isKeyboardVisible = viewportHeight < window.innerHeight;
-
-      if (isKeyboardVisible) {
-        document.querySelector(
-          "body"
-        )!.style.transform = `translateY(-${200}px)`;
-      } else {
-        document.querySelector("body")!.style.transform = "translateY(0)";
-      }
-    };
-
-    window.visualViewport!.addEventListener("resize", handleResize);
-    return () => {
-      window.visualViewport!.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  useEffect(() => {
     if (addressCoordinates?.lat && addressCoordinates.lng) {
-      markerPosition.current = {
-        lat: addressCoordinates.lat,
-        lng: addressCoordinates.lng,
-      };
+      markerPosition.current = { lat: addressCoordinates.lat, lng: addressCoordinates.lng };
       console.log(addressCoordinates);
       map?.panTo(markerPosition.current);
     }
@@ -118,7 +87,7 @@ export const AddAddress: React.FC = () => {
   };
 
   const locateUser = () => {
-    navigator.geolocation.getCurrentPosition((position) => {
+    navigator.geolocation.getCurrentPosition(position => {
       const { latitude, longitude } = position.coords;
       const newPosition = {
         lat: latitude,
@@ -137,10 +106,7 @@ export const AddAddress: React.FC = () => {
   };
 
   const handleClickAddAddress = async () => {
-    await reverseGeocode({
-      lat: markerPosition.current.lat,
-      lng: markerPosition.current.lng,
-    });
+    await reverseGeocode({ lat: markerPosition.current.lat, lng: markerPosition.current.lng });
     setProcessed(true);
   };
 
@@ -163,12 +129,7 @@ export const AddAddress: React.FC = () => {
 
   useEffect(() => {
     if (data?.district_id) {
-      dispatch(
-        setInputAddress({
-          ...data.address,
-          location: { ...markerPosition.current },
-        })
-      );
+      dispatch(setInputAddress({ ...data.address, location: { ...markerPosition.current } }));
       setOpen(true);
     }
   }, [data, markerPosition, dispatch]);
@@ -208,13 +169,8 @@ export const AddAddress: React.FC = () => {
           open={processed && !data?.district_id}
           autoHideDuration={4000}
           sx={{ zIndex: 90999 }}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert
-            onClose={() => setProcessed(false)}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+          <Alert onClose={() => setProcessed(false)} severity="error" sx={{ width: "100%" }}>
             Доставка по указанному адресу не осуществляется.
           </Alert>
         </Snackbar>
@@ -222,22 +178,13 @@ export const AddAddress: React.FC = () => {
           open={successOpen}
           autoHideDuration={3000}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
-          sx={{ zIndex: 90999 }}
-        >
-          <Alert
-            onClose={() => setSuccessOpen(false)}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
+          sx={{ zIndex: 90999 }}>
+          <Alert onClose={() => setSuccessOpen(false)} severity="success" sx={{ width: "100%" }}>
             Адрес успешно добавлен!
           </Alert>
         </Snackbar>
         <MarkerButton>
-          <img
-            src={IMAGES.marker}
-            alt="Locate"
-            style={{ width: "48px", height: "48px" }}
-          />
+          <img src={IMAGES.marker} alt="Locate" style={{ width: "48px", height: "48px" }} />
         </MarkerButton>
         <GoogleMap
           options={{
@@ -251,15 +198,11 @@ export const AddAddress: React.FC = () => {
           zoom={10}
           onLoad={onLoad}
           onDragEnd={handleCenterChanged}
-          onCenterChanged={handleCenterChanged}
-        >
+          onCenterChanged={handleCenterChanged}>
           {deliveryZones.map((polygon, index) => (
             <Polygon
               key={index}
-              paths={polygon.map((point) => ({
-                lat: point.latitude,
-                lng: point.longitude,
-              }))}
+              paths={polygon.map(point => ({ lat: point.latitude, lng: point.longitude }))}
               options={{
                 fillColor: "blue",
                 fillOpacity: 0.2,
@@ -273,11 +216,7 @@ export const AddAddress: React.FC = () => {
           ))}
         </GoogleMap>
         <LocateButton onClick={locateUser}>
-          <img
-            src={IMAGES.navigation}
-            alt="Locate"
-            style={{ width: "24px", height: "24px" }}
-          />
+          <img src={IMAGES.navigation} alt="Locate" style={{ width: "24px", height: "24px" }} />
         </LocateButton>
         <AddAddressButton variant="contained" onClick={handleClickAddAddress}>
           Добавить адрес
@@ -292,7 +231,7 @@ export const AddAddress: React.FC = () => {
               value={inputAddress.city}
               error={errors.city || false}
               helperText={errors.city ? "Поле не должно быть пустым" : ""}
-              onChange={(e) => {
+              onChange={e => {
                 dispatch(setInputAddress({ city: e.target.value }));
               }}
             />
@@ -303,14 +242,14 @@ export const AddAddress: React.FC = () => {
               fullWidth
               error={errors.street || false}
               helperText={errors.street ? "Поле не должно быть пустым" : ""}
-              onChange={(e) => {
+              onChange={e => {
                 dispatch(setInputAddress({ street: e.target.value }));
               }}
             />
             <Box sx={{ display: "flex", flexDirection: "row" }}>
               <TextField
                 value={inputAddress.dom}
-                onChange={(e) => {
+                onChange={e => {
                   dispatch(setInputAddress({ dom: e.target.value }));
                 }}
                 margin="dense"
@@ -328,35 +267,34 @@ export const AddAddress: React.FC = () => {
                 sx={{ mr: 1 }}
                 label="Подъезд"
                 fullWidth
-                onChange={(e) => {
+                onChange={e => {
                   dispatch(setInputAddress({ entrance: e.target.value }));
                 }}
               />
               <TextField
                 margin="dense"
-                sx={{ mr: 1 }}
                 label="Этаж"
                 fullWidth
-                onChange={(e) => {
+                onChange={e => {
                   dispatch(setInputAddress({ floor: e.target.value }));
-                }}
-              />
-              <TextField
-                margin="dense"
-                label="Корпус"
-                fullWidth
-                onChange={(e) => {
-                  dispatch(setInputAddress({ korp: e.target.value }));
                 }}
               />
             </Box>
             <TextField
               margin="dense"
+              label="Корпус"
+              fullWidth
+              onChange={e => {
+                dispatch(setInputAddress({ korp: e.target.value }));
+              }}
+            />
+            <TextField
+              margin="dense"
               label="Комментарий"
               fullWidth
               multiline
-              rows={2}
-              onChange={(e) => {
+              rows={4}
+              onChange={e => {
                 dispatch(setInputAddress({ client_comment: e.target.value }));
               }}
             />

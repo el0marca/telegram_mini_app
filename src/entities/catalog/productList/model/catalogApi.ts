@@ -5,17 +5,18 @@ import {
   //   APIResponse,
 } from "./types";
 import { Catalog, CategoryItem } from "@shared/types";
+const companyId = localStorage.getItem("companyId");
 
-export const BASE_URL = "https://waterapp.ru/api/5e44ebb1c32dab714548a832/v3";
+export const BASE_URL = `https://waterapp.ru/api/${companyId}/v3`;
 
 export const catalogApi = createApi({
   reducerPath: "catalogApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: headers => {
-      const token = localStorage.getItem("mobileToken");
-      if (token) {
-        headers.set("mobile-token", token);
+      const mobileToken = localStorage.getItem("mobileToken");
+      if (mobileToken) {
+        headers.set("mobile-token", mobileToken);
       }
       return headers;
     },
@@ -26,7 +27,6 @@ export const catalogApi = createApi({
       query: ({ categoryId, q }) => ({
         url: "catalog",
         method: "POST",
-        // headers: { "mobile-token": localStorage.getItem("token") || "" },
         body: {
           category_id: categoryId ?? "",
           q: q ?? "",

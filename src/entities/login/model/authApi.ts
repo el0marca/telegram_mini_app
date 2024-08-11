@@ -6,7 +6,7 @@ export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: (headers) => {
+    prepareHeaders: headers => {
       const mobileToken = localStorage.getItem("mobileToken");
       if (mobileToken) {
         headers.set("mobile-token", mobileToken);
@@ -15,27 +15,27 @@ export const authApi = createApi({
     },
   }),
   tagTypes: ["Token"],
-  endpoints: (builder) => ({
+  endpoints: builder => ({
     getOrUpdateToken: builder.query<MobileTokenServerResponse, void>({
       query: () => ({
         url: "tokens",
         method: "POST",
-        body: { token: "66b88418ac44a86f0a759a11" },
+        body: { token: localStorage.getItem("mobileToken") },
       }),
-      async onQueryStarted(_, { queryFulfilled }) {
-        try {
-          const {
-            data: {
-              mobile_token: { token },
-            },
-          } = await queryFulfilled;
-          if (token) {
-            localStorage.setItem("mobileToken", "66b88418ac44a86f0a759a11");
-          }
-        } catch (error) {
-          console.error("Failed to get or update token:", error);
-        }
-      },
+      // async onQueryStarted(_, { queryFulfilled }) {
+      //   try {
+      //     const {
+      //       data: {
+      //         mobile_token: { token },
+      //       },
+      //     } = await queryFulfilled;
+      //     if (token) {
+      //       localStorage.setItem("mobileToken", token);
+      //     }
+      //   } catch (error) {
+      //     console.error("Failed to get or update token:", error);
+      //   }
+      // },
       providesTags: ["Token"],
     }),
     sendSmsCode: builder.mutation<void, { companyId: string; phone: string }>({
@@ -59,17 +59,11 @@ export const authApi = createApi({
         body: { phone },
       }),
     }),
-    setCity: builder.mutation<
-      MobileTokenServerResponse,
-      { city_brach_id: string }
-    >({
+    setCity: builder.mutation<MobileTokenServerResponse, { city_brach_id: string }>({
       query: ({ city_brach_id }) => ({
         url: `tokens/city`,
         method: "POST",
-        body: {
-          token: localStorage.getItem("mobileToken"),
-          city_id: city_brach_id,
-        },
+        body: { token: localStorage.getItem("mobileToken"), city_id: city_brach_id },
       }),
       invalidatesTags: ["Token"],
     }),

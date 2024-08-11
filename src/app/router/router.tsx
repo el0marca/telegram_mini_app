@@ -1,4 +1,4 @@
-import React, {  useMemo } from "react";
+import React, { useMemo } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import getRoutes from "./routes";
 import { useGetOrUpdateTokenQuery } from "@entities/login";
